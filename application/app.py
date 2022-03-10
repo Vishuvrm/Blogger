@@ -11,12 +11,12 @@ import os
 from .form import *
 from .table_models import *
 from datetime import datetime
-from .create_db import create_db
-from .create_table import create_table
+# from .create_db import create_db
+# from .create_table import create_table
 
-# Create tables if not exists
-create_table("user", app.config["SQLALCHEMY_DATABASE_URI"], db)
-create_table("posts", app.config["SQLALCHEMY_DATABASE_URI"], db)
+# # Create tables if not exists
+# create_table("user", app.config["SQLALCHEMY_DATABASE_URI"], db)
+# create_table("posts", app.config["SQLALCHEMY_DATABASE_URI"], db)
 
 # Migrate our app with the database db
 migrate = Migrate(app, db)

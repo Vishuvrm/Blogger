@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+{{ ckeditor.load() }}
+{% for message in get_flashed_messages() %}
+    <div class="shadow-lg p-3 mb-5 bg-body rounded alert alert-success alert-dismissible fade show" role="alert">
+  {{message}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+    <br>
+    <h3>Create a new blog</h3>
+    <div class="shadow p-3 mb-5 bg-body rounded">
+    <form method = "POST">
+        {{form.hidden_tag()}}
+        {{form.title.label(class="form-label")}}
+        {{form.title(class="form-control")}}
+        <br>
+        {{form.content.label(class="form-label")}}
+        {{form.content(class="form-control", rows='15')}}
+        <br>
+        {{form.submit(class="btn btn-secondary")}} <a href="/dashboard" class="btn btn-outline-secondary">Cancel</a><a style="float:right" href="/posts" class="btn btn-primary">&#8592; All posts</a>
+    </form>
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='content') }}
+    </div>
+{% endblock %}

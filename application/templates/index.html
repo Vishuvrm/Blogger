@@ -1,10 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+  {{message}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
+{% if num_posts==0 %}
+<br>
+<h3>Nothing to show here :(</h3>
+<a href="/add/post" style="float:left" class="btn btn-outline-secondary btn-sm">Add a new post!</a>
+{% else %}
+    <br>
+    <h2>Check out our latest posts!</h2><br>
+    {% for post in posts %}
+        {% if current_user.is_authenticated %}
+            {% if (current_user.id == post.poster.id)  or (current_user.id == admin_id) %}
+
+                <div class="shadow p-3 mb-5 bg-body rounded">
+
+                        <a style="text-decoration: none;" href="/posts/{{post.id}}/{{post.slug}}"><h3>{{post.title}}
+                                <a href="/posts/delete/{{post.id}}/{{post.slug}}" style="float:right">
+                                <img src="../static/images/cross-icon.jpg" width="25" height="25"></img>
+                                </a>
+                            </h3>
+                        </a>
+                    {{post.slug}}<br>
+                    {{post.poster.username|capitalize}}<br>
+                    {{post.date_posted}}<br>
+                    {{post.content|striptags}}<br><br>
+                        <a href="/posts/edit/{{post.id}}/{{post.slug}}" style="float:center"><img src="../static/images/edit.jpg" width="30" height="30"></img></a>
+                        <a href="/add/post" style="float:right"><img src="../static/images/add.png" width="30" height="30"></img></a>
+                </div>
+            {% else %}
+                <div class="shadow p-3 mb-5 bg-body rounded">
+
+                        <a style="text-decoration: none;" href="/posts/{{post.id}}/{{post.slug}}"><h3>{{post.title}}</h3>
+                        </a>
+                    {{post.slug}}<br>
+                    {{post.poster.username|capitalize}}<br>
+                    {{post.date_posted}}<br>
+                    {{post.content|striptags}}<br><br>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="shadow p-3 mb-5 bg-body rounded">
+
+                <a style="text-decoration: none;" href="/posts/{{post.id}}/{{post.slug}}"><h3>{{post.title}}</h3>
+                </a>
+            {{post.slug}}<br>
+            {{post.poster.username|capitalize}}<br>
+            {{post.date_posted}}<br>
+            {{post.content|striptags}}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
+
+

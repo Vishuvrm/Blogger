@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+    <div class="shadow-lg p-3 mb-5 bg-body rounded alert alert-success alert-dismissible fade show" role="alert">
+  {{message}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+    <br>
+    <div class="shadow p-3 mb-5 bg-body rounded">
+    <h1>Welcome {{current_user.name}}!</h1>
+    </div>
+    {% include "profile.html" %}
+
+
+
+<!--&lt;!&ndash;Your profile&ndash;&gt;-->
+<!--<div class="card shadow p-3 mb-5 bg-body rounded">-->
+<!--  <div class="card-header">-->
+<!--      <strong>Your Profile</strong>-->
+<!--  </div>-->
+<!--  <div class="card-body">-->
+<!--    <h5 class="card-title">Your profile details  <p style="font-size: 15px; float:right">Remove your account &nbsp&nbsp<a style="float:right" href="/user/delete"><img src="../static/images/cross-icon.jpg" width="20" height="20"></a></p></h5>-->
+<!--    <p class="card-text">-->
+<!--    <table>-->
+<!--      <tr>-->
+<!--          <td>-->
+<!--        <strong>Full name: </strong>{{current_user.name}}<br>-->
+<!--        <strong>Blogger name: </strong>{{current_user.username}}<br>-->
+<!--        <strong>Email: </strong>{{current_user.email}}<br>-->
+<!--        <strong>Date added: </strong>{{current_user.date_added}}<br>-->
+<!--        <strong>User ID: </strong>{{current_user.id}}-->
+<!--              <br><br><br><br><br>-->
+<!--          </td>-->
+<!--          <td style="float:right">-->
+<!--              <img src="../static/images/ProfileImage.jpeg" width="200" height="250">-->
+<!--          </td>-->
+<!--      </tr>-->
+<!--  </table>-->
+<!--    </p>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--Update your profile-->
+<div class="card shadow p-3 mb-5 bg-body rounded">
+  <div class="card-header" id="Edit_Profile">
+      <strong>
+          Update profile
+          <p style="font-size: 15px; float:right">
+              Remove your account &nbsp&nbsp
+              <script>
+                    var delete_posts = false;
+                    function delete_user() {
+                        var delete_posts = true;
+                        alert("Delete all your posts first!")
+                                             }
+                    function delete_admin(){
+                    alert("Can't delete admin account!")
+                    }
+              </script>
+              {% if num_posts == 0 %}
+                  {% if current_user.id == admin_id %}
+                      <a style="float:right" href="/user/delete" onclick="delete_admin()">
+                          <img src="../static/images/cross-icon.jpg" width="20" height="20">
+                      </a>
+                  {% else %}
+                      <a style="float:right" href="/user/delete">
+                          <img src="../static/images/cross-icon.jpg" width="20" height="20">
+                      </a>
+                  {% endif %}
+              {% else %}
+                  {% if current_user.id == admin_id %}
+                      <a style="float:right" href="/user/delete" onclick="delete_admin()">
+                          <img src="../static/images/cross-icon.jpg" width="20" height="20">
+                      </a>
+                  {% else %}
+                      <a style="float:right" href="#remove_posts" onclick="delete_user()">
+                          <img src="../static/images/cross-icon.jpg" width="20" height="20">
+                      </a>
+                  {% endif %}
+              {% endif %}
+          </p>
+      </strong>
+  </div>
+  <div class="card-body">
+          <h4 class="card-title">Update your profile here</h4>
+    <p class="card-text">
+            <div class="shadow p-3 mb-5 bg-body rounded">
+                <form method = "POST" enctype="multipart/form-data">
+                    {{form.hidden_tag()}}
+                    {{form.name.label(class="form-label")}}
+                    {{form.name(class="form-control")}}
+                    <br>
+                    {{form.email.label(class="form-label")}}
+                    {{form.email(class="form-control")}}
+                    <br>
+                    {{form.username.label(class="form-label")}}
+                    {{form.username(class="form-control")}}
+                    <br>
+                    {{form.about.label(class="form-label")}}
+                    {{form.about(class="form-control", rows='10')}}
+                    <br>
+                    {{form.profession.label(class="form-label")}}
+                    {{form.profession(class="form-control")}}
+                    <br>
+                    {{form.experience.label(class="form-label")}}
+                    {{form.experience(class="form-control")}}
+                    <br>
+                    {{form.skills.label(class="form-label")}}
+                    {{form.skills(class="form-control")}}
+                    <br>
+                    {{form.profile_pic.label(class="form-label", id="change-photo")}}
+                    {{form.profile_pic(class="form-control")}}
+                    <br>
+                    {{form.submit(class="btn btn-secondary")}}
+                </form>
+      {{ ckeditor.load() }}
+      {{ ckeditor.config(name='about') }}
+    </div>
+    </p>
+  </div>
+</div>
+
+
+<!--Manage your posts-->
+<div class="card shadow p-3 mb-5 bg-body rounded">
+  <div class="card-header">
+      <strong>Your Posts</strong>
+  </div>
+  <div class="card-body">
+    <h4 class="card-title" id="remove_posts">Manage your posts here
+        {% if num_posts != 0 %}
+        <a href="/{{current_user.id}}/delete-all-posts" style="float:right" type="button" class="btn btn-outline-danger">Delete all posts</a>
+        {% endif %}
+    </h4>
+      {% if num_posts==0 %}
+      <p class="card-text">
+        <h3>Nothing to show here :(</h3>
+        <a href="/add/post" style="float:left" class="btn btn-outline-secondary btn-sm">Add a new post!</a>
+      <br>
+      <br>
+      </p>
+    {% else %}
+        {% for post in posts %}
+          <p id="view-post" class="card-text">
+            {% if current_user.is_authenticated %}
+                {% if current_user.id == post.poster.id %}
+                    <div class="shadow p-3 mb-5 bg-body rounded">
+
+                            <a style="text-decoration: none;" href="/posts/{{post.id}}/{{post.slug}}"><h3>{{post.title|title}}
+                                {% if current_user.is_authenticated %}
+                                    <a href="/posts/delete/{{post.id}}/{{post.slug}}" style="float:right">
+                                    <img src="../static/images/cross-icon.jpg" width="25" height="25"></img>
+                                    </a>
+                                {% endif %}
+                                </h3>
+                            </a>
+                        {{post.slug}}<br>
+                        {{post.poster.username|capitalize}}<br>
+                        {{post.date_posted}}<br>
+                        {{post.content|striptags}}<br><br>
+                        {% if current_user.is_authenticated %}
+                            <a href="/posts/edit/{{post.id}}/{{post.slug}}" style="float:center"><img src="../static/images/edit.jpg" width="30" height="30"></img></a>
+                            <a href="/add/post" style="float:right"><img src="../static/images/add.png" width="30" height="30"></img></a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endif %}
+            </p>
+        {% endfor %}
+    {% endif %}
+    <a href="/posts"><button type="button" class="btn btn-primary">View everyone's posts <strong>&#187;</strong></button></a>
+  </div>
+</div>
+{% endblock %}

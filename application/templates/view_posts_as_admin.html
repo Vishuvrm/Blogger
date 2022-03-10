@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+    <div class="shadow-lg p-3 mb-5 bg-body rounded alert alert-success alert-dismissible fade show" role="alert">
+  {{message}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+    <br>
+    <div class="shadow p-3 mb-5 bg-body rounded">
+    <h1>You are viewing {{user.name}} as admin!</h1>
+    </div>
+    {% include "profile_as_admin.html" %}
+
+<!--Manage your posts-->
+<div class="card shadow p-3 mb-5 bg-body rounded">
+  <div class="card-header">
+      <strong>Your Posts</strong>
+  </div>
+  <div class="card-body">
+    <h4 class="card-title" id="remove_posts">Manage your posts here
+        {% if num_posts != 0 %}
+        <a href="/{{user.id}}/delete-all-posts" style="float:right" type="button" class="btn btn-outline-danger">Delete all posts</a>
+        {% endif %}
+    </h4>
+      {% if num_posts==0 %}
+      <p class="card-text">
+        <h3>Nothing to show here :(</h3>
+        <a href="/add/post" style="float:left" class="btn btn-outline-secondary btn-sm">Add a new post!</a>
+      <br>
+      <br>
+      </p>
+    {% else %}
+        {% for post in posts %}
+          <p id="view-post" class="card-text">
+            {% if current_user.is_authenticated%}
+                {% if (user.id == post.poster.id) or (current_user.id == admin_id) %}
+                    <div class="shadow p-3 mb-5 bg-body rounded">
+
+                            <a style="text-decoration: none;" href="/posts/{{post.id}}/{{post.slug}}"><h3>{{post.title|title}}
+                                {% if current_user.is_authenticated %}
+                                    <a href="/posts/delete/{{post.id}}/{{post.slug}}" style="float:right">
+                                    <img src="../static/images/cross-icon.jpg" width="25" height="25"></img>
+                                    </a>
+                                {% endif %}
+                                </h3>
+                            </a>
+                        {{post.slug}}<br>
+                        {{post.poster.username|capitalize}}<br>
+                        {{post.date_posted}}<br>
+                        {{post.content|striptags}}<br><br>
+                        {% if current_user.is_authenticated %}
+                            <a href="/posts/edit/{{post.id}}/{{post.slug}}" style="float:center"><img src="../static/images/edit.jpg" width="30" height="30"></img></a>
+                            <a href="/add/post" style="float:right"><img src="../static/images/add.png" width="30" height="30"></img></a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endif %}
+            </p>
+        {% endfor %}
+    {% endif %}
+    <a href="/posts"><button type="button" class="btn btn-primary">View everyone's posts <strong>&#187;</strong></button></a>
+  </div>
+</div>
+
+{% endblock %}

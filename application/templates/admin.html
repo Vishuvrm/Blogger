@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+    <div class="shadow-lg p-3 mb-5 bg-body rounded alert alert-success alert-dismissible fade show" role="alert">
+  {{message}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
+<h2>Admin area</h2>
+
+<h1>Users list</h1>
+{% if num_users > 0 %}
+    <div class="shadow p-3 mb-5 bg-body rounded">
+        <table class="table table-hover">
+
+    {% for user in our_users %}
+            <tr>
+                <td>{{loop.index}}-<a href="/{{user.id}}/{{user.name}}/posts">{{user.name}}; {{user.email}} @ {{user.date_added}}</a></td>
+                {% if user.id != admin_id %}
+                    <td><a href="/admin/user/{{user.id}}/delete"><img src="../static/images/cross-icon.jpg" width="20" height="20"></a></td>
+                {% else %}
+                <td align="left"><kbd><mark>Admin</mark></kbd></td>
+                {% endif %}
+            </tr>
+    {% endfor %}
+        </table>
+    </div>
+{% else %}
+    <a href="/user/add" style="float:left" class="btn btn-outline-secondary btn-sm">Add a new user!</a>
+{% endif %}
+
+{% endblock %}

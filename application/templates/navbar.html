@@ -1,0 +1,42 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/"><img  src="../static/images/home_dark.png" onmouseover="this.src='../static/images/home_bright.png';" onmouseout="this.src='../static/images/home_dark.png';" width="40" height="40"></img></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/dashboard">My Dashboard</a>
+        </li>
+        {% if current_user.is_authenticated and current_user.id == admin_id %}
+          <li class="nav-item">
+            <strong><a style="color:yellow" class="nav-link active" aria-current="page" href="/admin">Admin portal</a></strong>
+          </li>
+        {% endif %}
+
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/add/post">Create post</a>
+        </li>
+      </ul>
+      <form class="d-flex" method="post" action="/search-results">
+        {{ form.hidden_tag() }} <!-- CSRF token so as to prevent our form's data to get highjacked by a hacker -->
+        <input name="searched" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" required>
+        <input type="image" alt="submit" src="../static/images/search_dark.jpg" onmouseover="this.src='../static/images/search_bright.jpg';" onmouseout="this.src='../static/images/search_dark.jpg';" width="30" height="30">
+      </form>
+      &nbsp&nbsp
+    {% if current_user.is_authenticated %}
+      <li style="color:white">
+        logged in as <a style="color:yellow" id="GFG" href="/dashboard">{{current_user.username}}{% if current_user.is_authenticated and current_user.id == admin_id %}(Admin){% endif %}</a>
+      </li>
+      <li>
+        <a id="GFG" STYLE="color:white" class="btn btn-outline-warning" aria-current="page" href="/logout">Logout</a>
+      </li>
+    {% else %}
+      <li>
+        <strong><a STYLE="color:white" class="btn btn-outline-warning" id="GFG" href="/login">login</a></strong>
+      </li>
+    {% endif %}
+    </div>
+  </div>
+</nav>

@@ -94,7 +94,7 @@ def dashboard():
                 # Save that image and delete the previous one
                 if user.profile_pic:
                     os.remove(os.path.join((app.config["UPLOAD_FOLDER"]), user.profile_pic))
-                profile_image.save(os.path.join(app.config["UPLOAD_FOLDER"]), pic_name)
+                profile_image.save(os.path.join(app.config["UPLOAD_FOLDER"], pic_name))
                 # save the name to the database
                 user.profile_pic = pic_name
 

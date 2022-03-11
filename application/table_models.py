@@ -28,8 +28,10 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # New PostGreSQL db
 
-app.config["SQLALCHEMY_DATABASE_URI"] = data["postgresql_uri"]
-# app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:@localhost/users"
+if data["use_local"] == "True":
+    app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:@localhost/users"
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = data["postgresql_uri"]
 # create_db()
 
 # Initialize the database

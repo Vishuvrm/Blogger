@@ -115,7 +115,11 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="profile-img">
-                            <img src="../static/images/default_profile_pic.png" alt="" />
+                            {% if current_user.profile_pic %}
+                                <img src="../static/uploads/images/{{current_user.profile_pic}}" alt="Profile image" />
+                            {% else %}
+                                <img src="../static/images/default_profile_pic.png" alt="" />
+                            {% endif %}
                             <div class="file btn btn-lg btn-primary">
                               {{current_user.name}}
                             </div>

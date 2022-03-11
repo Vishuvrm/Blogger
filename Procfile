@@ -1,1 +1,1 @@
-web: gunicorn main:table_models
+web: gunicorn main:app

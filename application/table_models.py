@@ -3,7 +3,13 @@ from flask import Flask, render_template, request, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_ckeditor import CKEditor
-from .create_db import *
+import json
+
+#load the json data
+file = open(r"application\config.json", "r")
+data = json.load(file)
+file.close()
+# from .create_db import *
 
 app = Flask(__name__)
 # Add CKEditor to this application
@@ -21,17 +27,17 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
 
 # New PostGreSQL db
-postgresql_uri = "postgres://xxhlrhhxezerto:96ad577e03aa8aab490f883b2d88bf605c5e0c6897df1a0d4d7dc5b13d245ad4@ec2-54-83-21-198.compute-1.amazonaws.com:5432d37606hncnusok"
-app.config["SQLALCHEMY_DATABASE_URI"] = postgresql_uri
+
+app.config["SQLALCHEMY_DATABASE_URI"] = data["postgresql_uri"]
 # app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:@localhost/users"
-create_db()
+# create_db()
 
 # Initialize the database
 db = SQLAlchemy(app)
 # Create a model for user
 
 # Create an admin ID
-admin_id = 42
+admin_id = data["admin_id"]
 
 #### There will be one to many relationship between User and Posts, i.e. a User can have many Posts, but a post can have only one User. ###
 

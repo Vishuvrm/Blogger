@@ -6,7 +6,7 @@ from flask_ckeditor import CKEditor
 import json
 
 #load the json data
-file = open(r"application\config.json", "r")
+file = open("config.json", "r")
 data = json.load(file)
 file.close()
 # from .create_db import *

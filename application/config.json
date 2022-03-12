@@ -1,6 +1,6 @@
 {
   "postgresql_uri": "postgresql://xxhlrhhxezerto:96ad577e03aa8aab490f883b2d88bf605c5e0c6897df1a0d4d7dc5b13d245ad4@ec2-54-83-21-198.compute-1.amazonaws.com:5432/d37606hncnusok",
   "local_uri": "mysql+pymysql://root:@localhost/users",
-  "use_local": "True",
+  "use_local": "False",
   "admin_id": 42
 }

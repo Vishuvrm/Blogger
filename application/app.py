@@ -84,16 +84,17 @@ def dashboard():
             user.profession = form.profession.data
             user.experience = form.experience.data
             user.skills = form.skills.data
-
             profile_image = form.profile_pic.data
+
             if profile_image:
                 # Grab image name
                 profile_pic_name = secure_filename(profile_image.filename)
                 # set uuid
                 pic_name = f"{(uuid.uuid1())}_{profile_pic_name}"
                 # Save that image and delete the previous one
-                if user.profile_pic:
-                    os.remove(os.path.join((app.config["UPLOAD_FOLDER"]), user.profile_pic))
+                pic_add = os.path.join((app.config["UPLOAD_FOLDER"]), user.profile_pic)
+                if os.path.exists(pic_add):
+                    os.remove(pic_add)
                 profile_image.save(os.path.join(app.config["UPLOAD_FOLDER"], pic_name))
                 # save the name to the database
                 user.profile_pic = pic_name
@@ -283,6 +284,18 @@ def add_user():
         # skills = [skill.strip() for skill in (form.skills.data).split(",")]
         skills = form.skills.data
         profile_pic = form.profile_pic.data
+        if profile_pic:
+            # Grab image name
+            profile_pic_name = secure_filename(profile_pic.filename)
+            # set uuid
+            pic_name = f"{(uuid.uuid1())}_{profile_pic_name}"
+            # Save that image and delete the previous one
+            pic_add = os.path.join((app.config["UPLOAD_FOLDER"]), pic_name)
+            if os.path.exists(pic_add):
+                os.remove(pic_add)
+            profile_pic.save(os.path.join(app.config["UPLOAD_FOLDER"], pic_name))
+            # save the name to the database
+            # user.profile_pic = pic_name
         password = form.password_hash.data
         hashed_pass = generate_password_hash(password, "sha256")
         user_as_username = User.query.filter_by(username=username).first()
@@ -305,7 +318,7 @@ def add_user():
 
             form.password_hash.data = ""
 
-            user = User(name=name, username=username, email=email, about=about, phone=phone, profession=profession, experience=experience, skills=skills, profile_pic=profile_pic, date_added=datetime.now(), password_hash=hashed_pass)
+            user = User(name=name, username=username, email=email, about=about, phone=phone, profession=profession, experience=experience, skills=skills, profile_pic=pic_name, date_added=datetime.now(), password_hash=hashed_pass)
             db.session.add(user)
             db.session.commit()
             flash(f"Hi {name}! You are now registered!")
@@ -352,6 +365,9 @@ def delete_user():
         else:
             id = current_user.id
             user = User.query.filter_by(id=id).first()
+            profile_pic = os.path.join((app.config["UPLOAD_FOLDER"]), user.profile_pic)
+            if os.path.exists(profile_pic):
+                os.remove(profile_pic)
             User.query.filter_by(id=id).delete()
             db.session.commit()
             flash(f"Your account removed! Thankyou for being with us so long..")
@@ -367,6 +383,9 @@ def admin_delete_user(id):
     try:
         if id != admin_id:
             user = User.query.filter_by(id=id).first()
+            profile_pic = os.path.join((app.config["UPLOAD_FOLDER"]), user.profile_pic)
+            if os.path.exists(profile_pic):
+                os.remove(profile_pic)
             User.query.filter_by(id=id).delete()
             db.session.commit()
             flash(f"Removed account for {user.name}(User-ID: {user.id})!")

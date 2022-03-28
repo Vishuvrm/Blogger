@@ -20,7 +20,15 @@
     <h3>{{post.title|title}}</h3>
     {{post.poster.username|capitalize}}<br>
     {{post.date_posted}}<br>
+</div>
+<div class="shadow p-3 mb-5 bg-body rounded">
+    <h3>{{post.title|title}}</h3>
+    {{post.poster.username|capitalize}}<br>
+    {{post.date_posted}}<br>
     {{post.content|safe}}<br><br>
+</div>
+<div class="shadow p-3 mb-5 bg-body rounded">
+    <h3 id="about-author">About the author: {{post.poster.username|capitalize}}</h3>
 </div>
 <a href="/posts" class="btn btn-outline-secondary">&#8592; All blogs</a>
 {% if current_user.is_authenticated %}

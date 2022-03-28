@@ -20,7 +20,7 @@
   <div class="card-body">
     <h4 class="card-title" id="remove_posts">Manage your posts here
         {% if num_posts != 0 %}
-        <a href="/{{user.id}}/delete-all-posts" style="float:right" type="button" class="btn btn-outline-danger">Delete all posts</a>
+        <a href="/admin/{{user.id}}/delete-all-posts" style="float:right" type="button" class="btn btn-outline-danger">Delete all posts</a>
         {% endif %}
     </h4>
       {% if num_posts==0 %}

@@ -10,6 +10,7 @@ import uuid as uuid # Unique User ID numbers
 import os
 from .form import *
 from .table_models import *
+# from .Connect_to_drive.connect_to_drive import upload_files
 from datetime import datetime
 # from .create_db import create_db
 # from .create_table import create_table
@@ -225,6 +226,24 @@ def delete_all_posts(id):
 
     return redirect("/dashboard")
 
+# delete all posts for a user
+@app.route("/admin/<int:id>/delete-all-posts")
+@login_required
+def delete_all_posts_as_admin(id):
+    if current_user.id == admin_id:
+        try:
+            Posts.query.filter_by(poster_id=id).delete()
+            db.session.commit()
+            flash(f"All posts Deleted!")
+        except Exception:
+            flash(f"Couldn't delete all posts")
+
+        return redirect("/admin")
+    else:
+        flash("You are not admin!")
+        redirect("/")
+
+
 # Pass stuff to extended files like base.html -> navbar.html
 @app.context_processor # It will pass stuff to the base file(extended files)
 def base():
@@ -288,12 +307,14 @@ def add_user():
             # Grab image name
             profile_pic_name = secure_filename(profile_pic.filename)
             # set uuid
-            pic_name = f"{(uuid.uuid1())}_{profile_pic_name}"
+            secured_pic_name = f"{(uuid.uuid1())}_{profile_pic_name}"
             # Save that image and delete the previous one
-            pic_add = os.path.join((app.config["UPLOAD_FOLDER"]), pic_name)
+            pic_add = os.path.join((app.config["UPLOAD_FOLDER"]), secured_pic_name)
             if os.path.exists(pic_add):
                 os.remove(pic_add)
-            profile_pic.save(os.path.join(app.config["UPLOAD_FOLDER"], pic_name))
+            profile_pic.save(pic_add)
+            # if os.path.exists(pic_add):
+            #     os.remove(pic_add)
             # save the name to the database
             # user.profile_pic = pic_name
         password = form.password_hash.data
@@ -307,6 +328,9 @@ def add_user():
             flash("Email already exists")
             # return redirect("/user/add")
         else:
+            if profile_pic:
+                upload_files(f"{name}\\ProfilePic")
+
             form.name.data = ""
             form.username.data = ""
             form.email.data = ""
@@ -318,7 +342,7 @@ def add_user():
 
             form.password_hash.data = ""
 
-            user = User(name=name, username=username, email=email, about=about, phone=phone, profession=profession, experience=experience, skills=skills, profile_pic=pic_name, date_added=datetime.now(), password_hash=hashed_pass)
+            user = User(name=name, username=username, email=email, about=about, phone=phone, profession=profession, experience=experience, skills=skills, profile_pic=secured_pic_name, date_added=datetime.now(), password_hash=hashed_pass)
             db.session.add(user)
             db.session.commit()
             flash(f"Hi {name}! You are now registered!")
@@ -383,9 +407,10 @@ def admin_delete_user(id):
     try:
         if id != admin_id:
             user = User.query.filter_by(id=id).first()
-            profile_pic = os.path.join((app.config["UPLOAD_FOLDER"]), user.profile_pic)
-            if os.path.exists(profile_pic):
-                os.remove(profile_pic)
+            if user.profile_pic:
+                profile_pic = os.path.join((app.config["UPLOAD_FOLDER"]), user.profile_pic)
+                if os.path.exists(profile_pic):
+                    os.remove(profile_pic)
             User.query.filter_by(id=id).delete()
             db.session.commit()
             flash(f"Removed account for {user.name}(User-ID: {user.id})!")

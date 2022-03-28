@@ -9,52 +9,90 @@
     </div>
 {% endfor %}
 
+<!-- Page Header-->
+<!--        <header class="masthead" style="background-image: url('../static/images/home_page_bg.jpg')">-->
+<!--            <div class="container position-relative px-4 px-lg-5">-->
+<!--                <div class="row gx-4 gx-lg-5 justify-content-center">-->
+<!--                    <div class="col-md-10 col-lg-8 col-xl-7">-->
+<!--                        <div class="site-heading">-->
+<!--                            <h1>Welcome to your blogging spot!</h1>-->
+<!--                            <span class="subheading">Start blogging like a pro</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </header>-->
+<!-- Bootstrap Static Header -->
+<div style="background: url('../static/images/home_page_bg.jpg'); background-size:100% 100%;" class="jumbotron bg-cover text-white">
+    <div class="container py-5 text-center">
+        <h1 class="display-4 font-weight-bold">Welcome to your blogging spot!</h1>
+        <br>
+        <h4 class="font-italic mb-0">Start blogging like a pro</h4>
+        <br><br>
+        <a href="#" role="button" class="btn btn-primary px-5">See what we do!</a>
+    </div>
+</div>
+
 {% if num_posts==0 %}
 <br>
 <h3>Nothing to show here :(</h3>
 <a href="/add/post" style="float:left" class="btn btn-outline-secondary btn-sm">Add a new post!</a>
 {% else %}
-    <br>
-    <h2>Check out our latest posts!</h2><br>
+    <h1>Check out our latest posts!</h1><br>
     {% for post in posts %}
         {% if current_user.is_authenticated %}
             {% if (current_user.id == post.poster.id)  or (current_user.id == admin_id) %}
 
                 <div class="shadow p-3 mb-5 bg-body rounded">
 
-                        <a style="text-decoration: none;" href="/posts/{{post.id}}/{{post.slug}}"><h3>{{post.title}}
+                        <a style="text-decoration: none;" href="/posts/{{post.id}}/{{post.slug}}">
+                            <h2 class="post-title">
+                                {{post.title}}
                                 <a href="/posts/delete/{{post.id}}/{{post.slug}}" style="float:right">
-                                <img src="../static/images/cross-icon.jpg" width="25" height="25"></img>
+                                <img src="../static/images/cross-icon.jpg" width="20" height="20"></img>
                                 </a>
-                            </h3>
+                            </h2>
+                            <h6 style="font-family:georgia,garamond,serif; color:grey; padding-left:10px" class="font-italic mb-0">
+                                <i>{{post.content[:400]|striptags}}...</i>
+                            </h6>
                         </a>
-                    {{post.slug}}<br>
-                    {{post.poster.username|capitalize}}<br>
-                    {{post.date_posted}}<br>
-                    {{post.content|striptags}}<br><br>
+                    <br>
+                    <p style="font-family:georgia,garamond,serif; font-style:italic;">
+                        <strong>Posted by: </strong><a href="/posts/{{post.id}}/{{post.slug}}/#about-author" style="font-family:georgia,garamond,serif; font-style:italic; text-decoration: none;">{{post.poster.username|capitalize}}</a> <strong>on</strong> {{post.date_posted}}
+                    </p>
                         <a href="/posts/edit/{{post.id}}/{{post.slug}}" style="float:center"><img src="../static/images/edit.jpg" width="30" height="30"></img></a>
                         <a href="/add/post" style="float:right"><img src="../static/images/add.png" width="30" height="30"></img></a>
                 </div>
             {% else %}
                 <div class="shadow p-3 mb-5 bg-body rounded">
 
-                        <a style="text-decoration: none;" href="/posts/{{post.id}}/{{post.slug}}"><h3>{{post.title}}</h3>
+                        <a style="text-decoration: none;" href="/posts/{{post.id}}/{{post.slug}}">
+                            <h2>{{post.title}}</h2>
+                            <br>
+                            <h6 style="font-family:georgia,garamond,serif; color:grey; padding-left:10px" class="font-italic mb-0">
+                                <i>{{post.content[:400]|striptags}}...</i>
+                            </h6>
                         </a>
-                    {{post.slug}}<br>
-                    {{post.poster.username|capitalize}}<br>
-                    {{post.date_posted}}<br>
-                    {{post.content|striptags}}<br><br>
+                    <br>
+                    <p style="font-family:georgia,garamond,serif; font-style:italic;">
+                        <strong>Posted by: </strong><a href="/posts/{{post.id}}/{{post.slug}}/#about-author" style="font-family:georgia,garamond,serif; font-style:italic; text-decoration: none;">{{post.poster.username|capitalize}}</a> <strong>on</strong> {{post.date_posted}}
+                    </p>
                 </div>
             {% endif %}
         {% else %}
             <div class="shadow p-3 mb-5 bg-body rounded">
 
-                <a style="text-decoration: none;" href="/posts/{{post.id}}/{{post.slug}}"><h3>{{post.title}}</h3>
+                <a style="text-decoration: none;" href="/posts/{{post.id}}/{{post.slug}}">
+                    <h2 style="color:#646466">{{post.title}}</h2>
+                    <br>
+                    <h6 style="font-family:georgia,garamond,serif; color:grey; padding-left:10px" class="font-italic mb-0">
+                        <i>{{post.content[:400]|striptags}}...</i>
+                    </h6>
                 </a>
-            {{post.slug}}<br>
-            {{post.poster.username|capitalize}}<br>
-            {{post.date_posted}}<br>
-            {{post.content|striptags}}
+                <br>
+                <p style="font-family:georgia,garamond,serif; font-style:italic;">
+                    <strong>Posted by: </strong><a href="/posts/{{post.id}}/{{post.slug}}/#about-author" style="font-family:georgia,garamond,serif; font-style:italic; text-decoration: none;">{{post.poster.username|capitalize}}</a> <strong>on</strong> {{post.date_posted}}
+                </p>
             </div>
         {% endif %}
     {% endfor %}

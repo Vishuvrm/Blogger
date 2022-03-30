@@ -93,7 +93,7 @@ def dashboard():
                 # set uuid
                 pic_name = f"{(uuid.uuid1())}_{profile_pic_name}"
                 # Save that image and delete the previous one
-                pic_add = os.path.join((app.config["UPLOAD_FOLDER"]), user.profile_pic)
+                pic_add = os.path.join((app.config["UPLOAD_FOLDER"]), profile_pic_name)
                 if os.path.exists(pic_add):
                     os.remove(pic_add)
                 profile_image.save(os.path.join(app.config["UPLOAD_FOLDER"], pic_name))
@@ -313,6 +313,8 @@ def add_user():
             if os.path.exists(pic_add):
                 os.remove(pic_add)
             profile_pic.save(pic_add)
+        else:
+            secured_pic_name = None
             # if os.path.exists(pic_add):
             #     os.remove(pic_add)
             # save the name to the database
